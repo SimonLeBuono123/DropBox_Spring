@@ -6,9 +6,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.authorization.AuthorityAuthorizationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -18,6 +21,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -31,10 +35,18 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity security, UserDetailsService userDetailsService, JwtUtility jwtUtility) throws Exception {
 
+        var user = AuthorityAuthorizationManager.<RequestAuthorizationContext>hasRole("USER");
+        var admin = AuthorityAuthorizationManager.<RequestAuthorizationContext >hasRole("ADMIN");
+        user.setRoleHierarchy(roleHierarchy());
+        admin.setRoleHierarchy(roleHierarchy());
+
+
         security
                 .csrf(AbstractHttpConfigurer::disable
                 )
                 .authorizeHttpRequests((authorize) -> authorize
+                        .requestMatchers("/login", "/user/register").permitAll()
+                        .requestMatchers("/file/upload").access(user)
                         .anyRequest().denyAll())
                 .authenticationProvider(authenticationProvider())
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -44,20 +56,26 @@ public class SecurityConfig {
                 ));
         return security.build();
     }
+
     @Bean
-    public UserDetailsService userDetailsService(UserRepository userRepository){
+    public UserDetailsService userDetailsService(UserRepository userRepository) {
         return new UserDetailsServiceImpl(userRepository);
     }
-
+    @Bean
+    public RoleHierarchy roleHierarchy(){
+        RoleHierarchyImpl role = new RoleHierarchyImpl();
+        role.setHierarchy("ROLE_ADMIN > ROLE_USER");
+        return role;
+    }
     @Bean
     AuthenticationManager authenticationManager(
             AuthenticationConfiguration config
-    )throws Exception{
+    ) throws Exception {
         return config.getAuthenticationManager();
     }
 
     @Bean
-    AuthenticationProvider authenticationProvider(){
+    AuthenticationProvider authenticationProvider() {
         var dao = new DaoAuthenticationProvider();
         dao.setUserDetailsService(userDetailsService(userRepo));
         dao.setPasswordEncoder(encoder());
@@ -65,7 +83,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public PasswordEncoder encoder(){
+    public PasswordEncoder encoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 }
