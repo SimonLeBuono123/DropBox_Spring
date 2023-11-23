@@ -21,7 +21,7 @@ public class LoginService {
     public String login(LoginDto loginDto){
         manager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword()));
         var user = userRepo.findByEmail(loginDto.getEmail()).orElseThrow();
-        String token = jwtUtility.generateToken(user.getEmail(), user.getAuthorities());
+        String token = jwtUtility.generateToken(user.getUsername(), user.getAuthorities());
         return token;
     }
 }

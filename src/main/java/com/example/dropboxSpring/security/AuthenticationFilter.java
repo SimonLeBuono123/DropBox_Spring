@@ -30,16 +30,19 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         //Authorization header
         var authHeader = request.getHeader("Authorization");
         // Bearer
-        if(authHeader == null || authHeader.isBlank()){
+        if (authHeader == null || authHeader.isBlank() || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
         String token = authHeader.substring(7);
+        jwtUtility.validateToken(token);
         String email = jwtUtility.extractEmail(token);
-        if(email != null && jwtUtility.validateToken(token)){
 
-            var user = this.userDetailsService.loadUserByUsername( email);
-            if(user != null){
+
+        if (email != null && jwtUtility.validateToken(token)) {
+
+            var user = this.userDetailsService.loadUserByUsername(email);
+            if (user != null) {
                 var auth = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword(), user.getAuthorities());
                 auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 log.info("Email of token holder : {}", email);

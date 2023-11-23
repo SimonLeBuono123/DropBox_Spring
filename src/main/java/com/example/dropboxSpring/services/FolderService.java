@@ -21,7 +21,7 @@ public class FolderService {
                 .name(dto.getName())
                 .user(user)
                 .build();
-        return folder;
+        return folderRepository.save(folder);
     }
-    
+
 }

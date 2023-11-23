@@ -6,12 +6,17 @@ import io.jsonwebtoken.io.Encoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.Date;
 import java.util.function.Function;
@@ -19,17 +24,21 @@ import java.util.function.Function;
 @Slf4j
 @Component
 public class JwtUtility {
-    private final SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-    //this generates a random secret
-    private final String secret = Encoders.BASE64.encode(key.getEncoded());
+    @Value("${jwt.secret}")
+    private String secret;
     // 15 minutes until token expires
     private int jwtExpiration = (60 * 15);
-    public String generateToken(String username , Collection<? extends GrantedAuthority> roles) {
+
+    public String generateToken(String email, Collection<? extends GrantedAuthority> roles) {
         SecretKey secrets = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
-        return Jwts.builder().setSubject(username).claim("role",roles).setIssuedAt(new Date(System.currentTimeMillis()))
+        log.info("secret: {}", Encoders.BASE64.encode(secret.getBytes()));
+        return Jwts.builder()
+                .setSubject(email).claim("role", roles)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(Date.from(Instant.now().plus(jwtExpiration, ChronoUnit.SECONDS)))
                 .signWith(secrets, SignatureAlgorithm.HS256).compact();
     }
+
     //this extracts the username from the token so one can find the user via token
     public String extractEmail(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -37,7 +46,12 @@ public class JwtUtility {
 
     public Claims extractAllClaims(String token) {
         SecretKey secrets = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
-        return Jwts.parserBuilder().setSigningKey(secrets).build().parseClaimsJws(token).getBody();}
+        return Jwts
+                .parserBuilder()
+                .setSigningKey(secrets)
+                .build()
+                .parseClaimsJws(token).getBody();
+    }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);

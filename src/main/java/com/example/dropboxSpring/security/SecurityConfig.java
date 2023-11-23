@@ -46,7 +46,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/login", "/user/register").permitAll()
-                        .requestMatchers("/file/upload").access(user)
+                        .requestMatchers("/file/upload", "/folder/create").access(user)
                         .anyRequest().denyAll())
                 .authenticationProvider(authenticationProvider())
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
