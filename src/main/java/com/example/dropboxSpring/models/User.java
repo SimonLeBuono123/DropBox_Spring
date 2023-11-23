@@ -11,9 +11,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
+@AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Entity
+
+@Builder
 public class User implements UserDetails {
     @Setter(value = AccessLevel.PRIVATE)
     @Id

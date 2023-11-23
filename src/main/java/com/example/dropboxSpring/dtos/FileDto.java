@@ -1,7 +1,6 @@
 package com.example.dropboxSpring.dtos;
 
 
-import jakarta.persistence.Access;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,7 +9,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 @Builder
-public class dtoFile {
+public class FileDto {
     private String name;
     private String url;
     private String type;

@@ -7,6 +7,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 @Builder
-public class dtoMessage {
+public class MessageDto {
     private String message;
 }
