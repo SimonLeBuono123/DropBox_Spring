@@ -25,6 +25,9 @@ public class User implements UserDetails {
     private String email;
     @Column(nullable = false)
     private String password;
+
+    @OneToMany
+    List<FileDb> files;
     private List<String> authorities;
 
     @Override

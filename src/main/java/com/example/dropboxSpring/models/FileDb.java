@@ -21,6 +21,7 @@ public class FileDb {
     @Lob
     private byte[] data;
 
+
     public FileDb(String name, String type, byte[] data) {
         this.name = name;
         this.type = type;
