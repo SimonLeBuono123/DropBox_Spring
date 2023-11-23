@@ -1,4 +1,4 @@
-package com.example.dropboxSpring.config;
+package com.example.dropboxSpring.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -29,7 +29,7 @@ public class JwtUtility {
                 .signWith(secrets, SignatureAlgorithm.HS256).compact();
     }
     //this extracts the username from the token so one can find the user via token
-    public String extractUsername(String token) {
+    public String extractEmail(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
