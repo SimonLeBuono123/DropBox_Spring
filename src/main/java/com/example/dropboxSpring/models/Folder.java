@@ -5,9 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.experimental.FieldDefaults;
 
-import java.io.File;
 import java.util.List;
 import java.util.UUID;
 
