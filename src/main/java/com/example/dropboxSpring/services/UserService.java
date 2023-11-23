@@ -25,7 +25,7 @@ public class UserService {
                 .name(registerDto.getName())
                 .email(registerDto.getEmail())
                 .password(encoder.encode(registerDto.getPassword()))
-                .authorities(Arrays.asList("ROLE_ADMIN"))
+                .authorities(Arrays.asList("ROLE_USER"))
                 .build();
 
         return userRepository.save(user);

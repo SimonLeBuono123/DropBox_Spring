@@ -24,4 +24,5 @@ public class LoginService {
         String token = jwtUtility.generateToken(user.getUsername(), user.getAuthorities());
         return token;
     }
+
 }
