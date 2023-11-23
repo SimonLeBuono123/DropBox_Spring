@@ -9,7 +9,7 @@ import java.util.UUID;
 @Data
 @Entity
 @Table(name = "files")
-public class FileDb {
+public class File {
     @Setter(value = AccessLevel.PRIVATE)
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -22,7 +22,7 @@ public class FileDb {
     private byte[] data;
 
 
-    public FileDb(String name, String type, byte[] data) {
+    public File(String name, String type, byte[] data) {
         this.name = name;
         this.type = type;
         this.data = data;
