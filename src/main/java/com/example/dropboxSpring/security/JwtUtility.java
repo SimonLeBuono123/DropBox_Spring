@@ -31,7 +31,6 @@ public class JwtUtility {
 
     public String generateToken(String email, Collection<? extends GrantedAuthority> roles) {
         SecretKey secrets = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
-        log.info("secret: {}", Encoders.BASE64.encode(secret.getBytes()));
         return Jwts.builder()
                 .setSubject(email).claim("role", roles)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
