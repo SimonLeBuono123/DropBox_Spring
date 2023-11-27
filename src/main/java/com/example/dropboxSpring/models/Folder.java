@@ -25,7 +25,7 @@ public class Folder {
     @ManyToOne
     private User user;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<File> files;
 
 }

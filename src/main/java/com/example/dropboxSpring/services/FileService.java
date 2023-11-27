@@ -40,7 +40,7 @@ public class FileService {
     public File uploadFile(UUID folderId, MultipartFile file, String token) throws IOException {
 
         String name = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
-        File file1 = new File(name, file.getContentType(), convert(file).toString().getBytes());
+        File file1 = new File(name, file.getContentType(), file.getBytes());
         User user = userService.findUserByToken(token);
         Folder folder = folderRepository.findById(folderId).orElseThrow(
                 () -> new FolderDoesNotExistException("Folder with id " + folderId + " does not exist"));
@@ -49,7 +49,8 @@ public class FileService {
                     "The currently logged in user " + user.getEmail() + " does not match the owner of this folder " +
                             "and can therefore not upload file in this folder");
         }
-        folder.getFiles().add((com.example.dropboxSpring.models.File) file);
+
+        folder.getFiles().add(file1);
         folderRepository.save(folder);
         return fileRepository.save(file1);
     }
@@ -58,17 +59,17 @@ public class FileService {
         return fileRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User with " + id + " id does not exist"));
     }
 
-    private static Path convert(MultipartFile file) throws IOException{
-        Path newFile = Paths.get(Objects.requireNonNull(file.getOriginalFilename()));
-        try(InputStream is = file.getInputStream();
-            OutputStream os = Files.newOutputStream(newFile)){
-            byte[] buffer = new byte[4096];
-            int read = 0;
-            while((read = is.read(buffer)) > 0){
-                os.write(buffer, 0, read);
-            }
-        }
-        return newFile;
-    }
+//    private static Path convert(MultipartFile file) throws IOException{
+//        Path newFile = Paths.get(Objects.requireNonNull(file.getOriginalFilename()));
+//        try(InputStream is = file.getInputStream();
+//            OutputStream os = Files.newOutputStream(newFile)){
+//            byte[] buffer = new byte[4096];
+//            int read = 0;
+//            while((read = is.read(buffer)) > 0){
+//                os.write(buffer, 0, read);
+//            }
+//        }
+//        return newFile;
+//    }
 
 }
