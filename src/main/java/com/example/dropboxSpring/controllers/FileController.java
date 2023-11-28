@@ -2,8 +2,10 @@ package com.example.dropboxSpring.controllers;
 
 import com.example.dropboxSpring.dtos.FileDto;
 import com.example.dropboxSpring.dtos.MessageDto;
+import com.example.dropboxSpring.models.File;
 import com.example.dropboxSpring.services.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -48,8 +50,9 @@ public class FileController {
             @RequestHeader("Authorization") String token,
             @PathVariable String folderId
     ){
+        String reTokened = token.split(" ")[1].trim();
             List<FileDto> files = fileService
-                    .getAllFilesByFolder(UUID.fromString(folderId), token)
+                    .getAllFilesByFolder(UUID.fromString(folderId), reTokened)
                     .map(file -> {
                         String downloadUri = ServletUriComponentsBuilder
                                 .fromCurrentContextPath()
@@ -66,5 +69,22 @@ public class FileController {
                         );
                     }).collect(Collectors.toList());
             return ResponseEntity.ok(files);
+    }
+
+    @GetMapping("/{fileId}/folder/{folderId}")
+    public ResponseEntity<byte[]> getFileById(
+            @RequestHeader("Authorization") String token,
+            @PathVariable String fileId,
+            @PathVariable String folderId
+    ){
+        String reTokened = token.split(" ")[1].trim();
+        File file = fileService.getFileById(
+                UUID.fromString(folderId),
+                UUID.fromString(fileId)
+                , reTokened);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename = \"" + file.getName() + "\"")
+                .body(file.getData());
     }
 }
