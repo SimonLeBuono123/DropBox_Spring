@@ -1,5 +1,6 @@
 package com.example.dropboxSpring.services;
 
+import com.example.dropboxSpring.exceptions.FileDoesNotExistException;
 import com.example.dropboxSpring.exceptions.FolderDoesNotExistException;
 import com.example.dropboxSpring.exceptions.UserDoesNotMatchOwnerOfFolderException;
 import com.example.dropboxSpring.models.File;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.UUID;
@@ -41,7 +43,7 @@ public class FileService {
         Folder folder = folderRepository.findById(folderId).orElseThrow(
                 () -> new FolderDoesNotExistException("Folder with id " + folderId + " does not exist"));
         // This is for checking if the user of the folder is the same as the active token user.
-        if (checkFolderAuthentication(folder, user)) {
+        if (!checkFolderAuthentication(folder, user)) {
             throw new UserDoesNotMatchOwnerOfFolderException(
                     "The currently logged in user " + user.getEmail() +
                             " does not match the owner of this folder: " +
@@ -53,17 +55,18 @@ public class FileService {
         return fileRepository.save(newFile);
     }
 
-    public File getFileById(UUID folderId, UUID id, String token) {
+    public File getFileById(UUID folderId, UUID fileId, String token) {
         User user = userService.findUserByToken(token);
         Folder folder = folderRepository.findById(folderId).orElseThrow(
                 () -> new FolderDoesNotExistException("Folder with id " + folderId + " does not exist"));
-        if (checkFolderAuthentication(folder, user)) {
+        if (!checkFolderAuthentication(folder, user)) {
             throw new UserDoesNotMatchOwnerOfFolderException(
                     "The currently logged in user " + user.getEmail() +
                             " does not match the owner of this folder: " +
                             folder.getUser().getEmail());
         }
-        return fileRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User with " + id + " id does not exist"));
+        return fileRepository.findById(fileId).orElseThrow(
+                () -> new FileDoesNotExistException("File with id" + fileId + " does not exist"));
     }
 
     public Stream<File> getAllFilesByFolder(UUID folderId, String token) {
@@ -71,7 +74,7 @@ public class FileService {
         Folder folder = folderRepository.findById(folderId).orElseThrow(
                 () -> new FolderDoesNotExistException("Folder with id " + folderId + " does not exist"));
 
-        if(checkFolderAuthentication(folder, user)) {
+        if(!checkFolderAuthentication(folder, user)) {
             throw new UserDoesNotMatchOwnerOfFolderException(
                     "The currently logged in user " + user.getEmail() +
                             " does not match the owner of this folder: " +
