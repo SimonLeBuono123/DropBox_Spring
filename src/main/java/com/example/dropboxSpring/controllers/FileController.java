@@ -1,5 +1,6 @@
 package com.example.dropboxSpring.controllers;
 
+import com.example.dropboxSpring.dtos.FileDto;
 import com.example.dropboxSpring.dtos.MessageDto;
 import com.example.dropboxSpring.services.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,8 +8,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RequestMapping("/file")
 @RestController
@@ -36,5 +40,31 @@ public class FileController {
             message = String.valueOf(e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new MessageDto(message));
         }
+    }
+
+
+    @GetMapping("/all/folder/{folderId}")
+    public ResponseEntity<List<FileDto>> getAllFilesByFolder(
+            @RequestHeader("Authorization") String token,
+            @PathVariable String folderId
+    ){
+            List<FileDto> files = fileService
+                    .getAllFilesByFolder(UUID.fromString(folderId), token)
+                    .map(file -> {
+                        String downloadUri = ServletUriComponentsBuilder
+                                .fromCurrentContextPath()
+                                .path("/file/")
+                                .path(file.getId() + "/")
+                                .path("/folder/")
+                                .path(folderId)
+                                .toUriString();
+                        return new FileDto(
+                                file.getName(),
+                                downloadUri,
+                                file.getType(),
+                                file.getData().length
+                        );
+                    }).collect(Collectors.toList());
+            return ResponseEntity.ok(files);
     }
 }
