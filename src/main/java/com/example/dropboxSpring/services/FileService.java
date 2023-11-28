@@ -9,12 +9,9 @@ import com.example.dropboxSpring.models.User;
 import com.example.dropboxSpring.repositories.FileRepository;
 import com.example.dropboxSpring.repositories.FolderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.UUID;
@@ -81,6 +78,22 @@ public class FileService {
                             folder.getUser().getEmail());
         }
         return folder.getFiles().stream();
+    }
+
+
+    public void deleteFileById(UUID fileId, String token) {
+        User user = userService.findUserByToken(token);
+        Folder folder = folderRepository.findFolderByFileId(fileId).orElseThrow(
+                () -> new FolderDoesNotExistException("Cannot find folder with file id : " + fileId));
+
+        if(!checkFolderAuthentication(folder, user)) {
+            throw new UserDoesNotMatchOwnerOfFolderException(
+                    "The currently logged in user " + user.getEmail() +
+                            " does not match the owner of this folder: " +
+                            folder.getUser().getEmail());
+        }
+            fileRepository.deleteById(fileId);
+
     }
 
 
