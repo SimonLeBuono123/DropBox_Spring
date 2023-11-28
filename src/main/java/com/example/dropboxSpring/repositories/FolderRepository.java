@@ -11,7 +11,8 @@ public interface FolderRepository extends JpaRepository<Folder, UUID> {
     @Query(value = """
             SELECT fo.id, fo.name, fo.user_id FROM folder_files LEFT JOIN files f ON f.id = folder_files.files_id
             LEFT JOIN folder fo ON fo.id = folder_files.folder_id
-            WHERE files = ?;
+            WHERE f.id = ?;
             """, nativeQuery = true)
     Optional<Folder> findFolderByFileId(UUID fileId);
+
 }

@@ -92,6 +92,8 @@ public class FileService {
                             " does not match the owner of this folder: " +
                             folder.getUser().getEmail());
         }
+        folder.getFiles().remove(fileRepository.findById(fileId).orElseThrow());
+        folderRepository.save(folder);
             fileRepository.deleteById(fileId);
 
     }

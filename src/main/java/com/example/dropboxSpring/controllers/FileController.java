@@ -87,5 +87,21 @@ public class FileController {
                         "attachment; filename = \"" + file.getName() + "\"")
                 .body(file.getData());
     }
-    
+
+    @DeleteMapping("/delete/{fileId}")
+    public ResponseEntity<MessageDto> deleteFileById(
+            @RequestHeader("Authorization") String token,
+            @PathVariable String fileId
+            ){
+        String reTokened = token.split(" ")[1].trim();
+        String message = "";
+        try {
+            fileService.deleteFileById(UUID.fromString(fileId), reTokened);
+            message = "File successfully deleted!";
+            return ResponseEntity.ok(new MessageDto(message));
+        }catch(Exception e){
+            message = "File failed to be deleted";
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new MessageDto(message));
+        }
+    }
 }
