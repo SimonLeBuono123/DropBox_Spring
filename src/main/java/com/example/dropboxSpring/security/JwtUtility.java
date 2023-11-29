@@ -59,7 +59,7 @@ public class JwtUtility {
             return true;
         } catch (SignatureException e) {
             log.info("Invalid JWT signature.");
-            log.trace("Invalid JWT signature trace: {}", e);
+           log.trace("Invalid JWT signature trace: {}", e);
         } catch (MalformedJwtException e) {
             log.info("Invalid JWT token.");
             log.trace("Invalid JWT token trace: {}", e);

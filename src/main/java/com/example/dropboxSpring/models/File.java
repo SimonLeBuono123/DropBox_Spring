@@ -20,6 +20,7 @@ public class File {
     private String name;
     private String type;
 
+    @Column(columnDefinition = "mediumblob")
     @Lob
     private byte[] data;
 
