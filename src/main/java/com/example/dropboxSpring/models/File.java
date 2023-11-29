@@ -12,7 +12,6 @@ import java.util.UUID;
 @Table(name = "files")
 @NoArgsConstructor
 public class File {
-    @Setter(value = AccessLevel.PRIVATE)
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
