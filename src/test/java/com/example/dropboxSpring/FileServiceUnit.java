@@ -49,7 +49,7 @@ public class FileServiceUnit {
     @Test
     void uploadFile() throws IOException {
         //given
-        final MockMultipartFile file = new MockMultipartFile("data", "test.txt", "text/plain", "hello test!".getBytes());
+        final MockMultipartFile mockFile = new MockMultipartFile("data", "test.txt", "text/plain", "hello test!".getBytes());
         User user = User.builder().id(UUID.randomUUID())
                 .email("test@email.com")
                 .password("password123")
@@ -67,21 +67,22 @@ public class FileServiceUnit {
 
         String token = jwtUtility.generateToken(user.getEmail(), user.getAuthorities());
 
-        var originalFileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename())) ;
-        var type = file.getContentType();
-        var data = file.getBytes();
-        var newFile = new File(originalFileName, type, data);
+        var fileName = StringUtils.cleanPath(Objects.requireNonNull(mockFile.getOriginalFilename())) ;
+        var type = mockFile.getContentType();
+        var data = mockFile.getBytes();
+        var newFile = new File(fileName, type, data);
 
 
         Mockito.when(folderRepository.findById(folder.getId())).thenReturn(Optional.of(folder));
         Mockito.when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
         Mockito.when(fileRepository.save(newFile)).then(invocation -> {
-            var fileMock = (File) invocation.getArgument(0);
-            fileMock.setId(UUID.randomUUID());
-            return fileMock;
+            var file = (File) invocation.getArgument(0);
+            file.setId(UUID.randomUUID());
+            return file;
         });
         //when
-        var result = Assertions.assertDoesNotThrow(() -> fileService.uploadFile(folder.getId(), file, token));
+        var result = Assertions.assertDoesNotThrow(() ->
+                fileService.uploadFile(folder.getId(), mockFile, token));
 
 
         //then
