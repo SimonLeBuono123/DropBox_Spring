@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Stream;
@@ -98,6 +99,25 @@ public class FileService {
 
     }
 
+    //deletes many files by adding them the file id to a string array
+    public void deleteManyFilesById(UUID folderId, String token, List<String> listOfIds){
+        User user = userService.findUserByToken(token);
+        Folder folder = folderRepository.findById(folderId).orElseThrow(
+                () -> new FolderDoesNotExistException("Cannot find folder with file id : " + folderId));
+
+        if(!checkFolderAuthentication(folder, user)) {
+            throw new UserDoesNotMatchOwnerOfFolderException(
+                    "The currently logged in user " + user.getEmail() +
+                            " does not match the owner of this folder: " +
+                            folder.getUser().getEmail());
+        }
+
+        for(var id : listOfIds){
+            folder.getFiles().remove(fileRepository.findById(UUID.fromString(id)).orElseThrow());
+            folderRepository.save(folder);
+            fileRepository.deleteById(UUID.fromString(id));
+        }
+    }
 
     // This is for checking if the user of the folder is the same as the active token user.
     public boolean checkFolderAuthentication(Folder folder, User activeUser){

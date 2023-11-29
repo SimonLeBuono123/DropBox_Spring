@@ -10,10 +10,14 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+//class for handling files http routes.
 @RequestMapping("/file")
 @RestController
 public class FileController {
@@ -106,8 +110,28 @@ public class FileController {
             message = "File successfully deleted!";
             return ResponseEntity.ok(new MessageDto(message));
         } catch (Exception e) {
-            message = "File failed to be deleted";
+            message = e.getMessage();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new MessageDto(message));
         }
+    }
+
+    @DeleteMapping("/delete/many/{folderId}")
+    public ResponseEntity<MessageDto> deleteManyFilesByFolder(
+            @RequestHeader("Authorization") String token,
+            @PathVariable String folderId,
+            @RequestBody List<String> listOfFileIds
+    ){
+        String reTokened = token.split(" ")[1].trim();
+        String message = "";
+        try {
+            fileService.deleteManyFilesById(UUID.fromString(folderId), reTokened, listOfFileIds);
+            message = "Files successfully deleted";
+            return ResponseEntity.ok(new MessageDto(message));
+        }catch (Exception e){
+            message = e.getMessage();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new MessageDto(message));
+        }
+
+
     }
 }
