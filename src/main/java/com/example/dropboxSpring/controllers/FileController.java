@@ -29,7 +29,7 @@ public class FileController {
         this.fileService = fileService;
     }
 
-    // Http post method for uploading a file inside a folder.
+    // Http post method for uploading a file to folder.
     @PostMapping("/upload/folder/{folderId}")
     public ResponseEntity<MessageDto> uploadFile(
             @RequestHeader("Authorization") String token,
