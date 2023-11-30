@@ -2,6 +2,7 @@ package com.example.dropboxSpring.controllers;
 
 import com.example.dropboxSpring.dtos.FileDto;
 import com.example.dropboxSpring.dtos.MessageDto;
+import com.example.dropboxSpring.dtos.UploadFileDto;
 import com.example.dropboxSpring.models.File;
 import com.example.dropboxSpring.services.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.lang.reflect.Array;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -29,9 +31,20 @@ public class FileController {
         this.fileService = fileService;
     }
 
-    // Http post method for uploading a file to folder.
+    /**
+     * Http post method for uploading file to a folder
+     * Uses a generic wildcard, so I can return both error message and file value
+     * depending on final result
+     * @param token
+     * @param file
+     * @param folderId
+     * @return
+     */
+    /* Http post method for uploading a file to folder.
+
+     */
     @PostMapping("/upload/folder/{folderId}")
-    public ResponseEntity<MessageDto> uploadFile(
+    public ResponseEntity<?> uploadFile(
             @RequestHeader("Authorization") String token,
             @RequestParam("file") MultipartFile file,
             @PathVariable String folderId
@@ -40,9 +53,8 @@ public class FileController {
         String reTokened = token.split(" ")[1].trim();
         try {
 
-            fileService.uploadFile(UUID.fromString(folderId), file, reTokened);
-            message = "Uploaded file successfully: " + file.getOriginalFilename();
-            return ResponseEntity.ok(new MessageDto(message));
+            UploadFileDto result = fileService.uploadFile(UUID.fromString(folderId), file, reTokened);
+            return ResponseEntity.ok(result);
         } catch (Exception e) {
             message = String.valueOf(e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new MessageDto(message));

@@ -88,7 +88,7 @@ public class FileServiceUnit {
         //then
         Assertions.assertEquals("test.txt", result.getName());
         Assertions.assertEquals("text/plain", result.getType());
-        Assertions.assertEquals("hello test!", new String(result.getData(), StandardCharsets.UTF_8));
+        Assertions.assertEquals("hello test!", result.getData());
         Assertions.assertNotNull(result.getId());
 
 

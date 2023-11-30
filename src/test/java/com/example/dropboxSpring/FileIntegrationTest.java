@@ -6,7 +6,6 @@ import com.example.dropboxSpring.models.User;
 import com.example.dropboxSpring.repositories.FolderRepository;
 import com.example.dropboxSpring.repositories.UserRepository;
 import com.example.dropboxSpring.security.JwtUtility;
-import com.example.dropboxSpring.utils.TokenStringUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,8 +13,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.TestPropertySource;
@@ -24,10 +25,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.UUID;
+
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -76,9 +78,6 @@ public class FileIntegrationTest {
 
         String folderId = String.valueOf(folder.getId());
         var token = jwtUtility.generateToken(user.getEmail(), user.getAuthorities());
-        String message = "Uploaded file successfully: " + file.getOriginalFilename();
-        var messageDto = new MessageDto(message);
-        var json = mapper.writeValueAsString(messageDto);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + token);
         //when
@@ -91,12 +90,14 @@ public class FileIntegrationTest {
                 .content(file.getBytes())
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .accept("*/*");
-
         //then
         mvc.perform(request)
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().bytes(message.getBytes()))
-                .andExpect(MockMvcResultMatchers.jsonPath(("$.message"), Matchers.is(message)));
+                .andExpect(MockMvcResultMatchers.content().json("{}"))
+                .andExpect(MockMvcResultMatchers.jsonPath(("$.name"), Matchers.is("test.txt")))
+                .andExpect(MockMvcResultMatchers.jsonPath(("$.type"), Matchers.is("text/plain")))
+                .andExpect(MockMvcResultMatchers.jsonPath(("$.data"), Matchers.is("this is a test")));
+
 
     }
 }

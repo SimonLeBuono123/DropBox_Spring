@@ -1,5 +1,6 @@
 package com.example.dropboxSpring.services;
 
+import com.example.dropboxSpring.dtos.UploadFileDto;
 import com.example.dropboxSpring.exceptions.FileDoesNotExistException;
 import com.example.dropboxSpring.exceptions.FolderDoesNotExistException;
 import com.example.dropboxSpring.exceptions.UserDoesNotMatchOwnerOfFolderException;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -32,7 +34,7 @@ public class FileService {
         this.userService = userService;
     }
 
-    public File uploadFile(UUID folderId, MultipartFile file, String token) throws IOException {
+    public UploadFileDto uploadFile(UUID folderId, MultipartFile file, String token) throws IOException {
 
         String name = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         File newFile = new File(name, file.getContentType(), file.getBytes());
@@ -50,7 +52,13 @@ public class FileService {
 
         folder.getFiles().add(newFile);
         folderRepository.save(folder);
-        return fileRepository.save(newFile);
+        fileRepository.save(newFile);
+        return new UploadFileDto(
+                newFile.getId(),
+                newFile.getName(),
+                newFile.getType(),
+               new String(newFile.getData(), StandardCharsets.UTF_8)
+        );
     }
 
     public File getFileById(UUID folderId, UUID fileId, String token) {
