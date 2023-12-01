@@ -57,6 +57,9 @@ public class FileIntegrationTest {
     void beforeEach(){
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "folder_files","folder", "user", "files" );
     }
+
+    /*this is a method for testing if a file and its content gets successfully uploaded
+    */
     @Test
     void uploadNewFileSuccess() throws Exception {
         //given
@@ -71,12 +74,21 @@ public class FileIntegrationTest {
                 .name("tests")
                 .user(user)
                 .build();
+
+        // creates a user than will be the owner of folder
         userRepository.save(user);
+        //creates a folder that will hold the file
         folderRepository.save(folder);
 
-        final MockMultipartFile file = new MockMultipartFile("file", "test.txt", "text/plain", "this is a test".getBytes());
+        var fileName = "test.txt";
+        var contentType = "text/plain";
+        var data = "this is a test".getBytes();
+
+        final MockMultipartFile file = new MockMultipartFile("file", fileName, contentType, data);
+
 
         String folderId = String.valueOf(folder.getId());
+        //generate a token for created user
         var token = jwtUtility.generateToken(user.getEmail(), user.getAuthorities());
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + token);
@@ -94,10 +106,9 @@ public class FileIntegrationTest {
         mvc.perform(request)
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json("{}"))
-                .andExpect(MockMvcResultMatchers.jsonPath(("$.name"), Matchers.is("test.txt")))
-                .andExpect(MockMvcResultMatchers.jsonPath(("$.type"), Matchers.is("text/plain")))
-                .andExpect(MockMvcResultMatchers.jsonPath(("$.data"), Matchers.is("this is a test")));
-
+                .andExpect(MockMvcResultMatchers.jsonPath(("$.name"), Matchers.is(fileName)))
+                .andExpect(MockMvcResultMatchers.jsonPath(("$.type"), Matchers.is(contentType)))
+                .andExpect(MockMvcResultMatchers.jsonPath(("$.data"), Matchers.is(new String(data, StandardCharsets.UTF_8))));
 
     }
 }
