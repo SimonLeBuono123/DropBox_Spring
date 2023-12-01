@@ -171,7 +171,8 @@ public class FileIntegrationTest {
         mvc.perform(request)
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json("{}"))
-                .andExpect(MockMvcResultMatchers.jsonPath(("$.message"), Matchers.is("Files successfully deleted")));
+                .andExpect(MockMvcResultMatchers.jsonPath(("$.message"), Matchers.is("Files successfully deleted")))
+                .andExpect(MockMvcResultMatchers.jsonPath(("$.data"), Matchers.empty()));
 
     }
 }

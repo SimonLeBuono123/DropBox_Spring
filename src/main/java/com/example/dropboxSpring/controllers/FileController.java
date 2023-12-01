@@ -4,6 +4,7 @@ import com.example.dropboxSpring.dtos.FileDto;
 import com.example.dropboxSpring.dtos.MessageDto;
 import com.example.dropboxSpring.dtos.UploadFileDto;
 import com.example.dropboxSpring.models.File;
+import com.example.dropboxSpring.repositories.FileRepository;
 import com.example.dropboxSpring.services.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -12,9 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.lang.reflect.Array;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -25,10 +23,11 @@ import java.util.stream.Collectors;
 public class FileController {
 
     private FileService fileService;
-
+    private FileRepository fileRepository;
     @Autowired
-    public FileController(FileService fileService) {
+    public FileController(FileService fileService, FileRepository fileRepository) {
         this.fileService = fileService;
+        this.fileRepository = fileRepository;
     }
 
     /**
@@ -138,7 +137,7 @@ public class FileController {
         try {
             fileService.deleteManyFilesById(UUID.fromString(folderId), reTokened, listOfFileIds);
             message = "Files successfully deleted";
-            return ResponseEntity.ok(new MessageDto(message));
+            return ResponseEntity.ok(new MessageDto(message, fileRepository.findAll()));
         }catch (Exception e){
             message = e.getMessage();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new MessageDto(message));
