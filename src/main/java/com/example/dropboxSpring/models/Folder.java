@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,10 +23,16 @@ public class Folder {
     @Column(nullable = false)
     private String name;
 
-    @ManyToOne
+
+    @ManyToOne(optional = false)
     private User user;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<File> files;
 
+    public Folder(String name, User user, List<File> files) {
+        this.name = name;
+        this.user = user;
+        this.files = new ArrayList<>();
+    }
 }

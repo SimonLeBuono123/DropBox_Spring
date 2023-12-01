@@ -11,6 +11,7 @@ import com.example.dropboxSpring.repositories.FileRepository;
 import com.example.dropboxSpring.repositories.FolderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
@@ -34,6 +35,7 @@ public class FileService {
         this.userService = userService;
     }
 
+    @Transactional
     public UploadFileDto uploadFile(UUID folderId, MultipartFile file, String token) throws IOException {
 
         String name = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
@@ -50,9 +52,9 @@ public class FileService {
                              folder.getUser().getEmail());
         }
 
+        fileRepository.save(newFile);
         folder.getFiles().add(newFile);
         folderRepository.save(folder);
-        fileRepository.save(newFile);
         return new UploadFileDto(
                 newFile.getId(),
                 newFile.getName(),
