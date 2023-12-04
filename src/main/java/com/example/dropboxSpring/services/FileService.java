@@ -35,6 +35,14 @@ public class FileService {
         this.userService = userService;
     }
 
+    /**
+     * Method for uploading a file to a given folder
+     * @param folderId
+     * @param file
+     * @param token
+     * @return
+     * @throws IOException
+     */
     @Transactional
     public UploadFileDto uploadFile(UUID folderId, MultipartFile file, String token) throws IOException {
 
@@ -63,10 +71,19 @@ public class FileService {
         );
     }
 
+    /**
+     * Method for getting a file by id of given folder.
+     * @param folderId
+     * @param fileId
+     * @param token
+     * @return
+     */
     public File getFileById(UUID folderId, UUID fileId, String token) {
         User user = userService.findUserByToken(token);
+
         Folder folder = folderRepository.findById(folderId).orElseThrow(
                 () -> new FolderDoesNotExistException("Folder with id " + folderId + " does not exist"));
+
         if (!checkFolderAuthentication(folder, user)) {
             throw new UserDoesNotMatchOwnerOfFolderException(
                     "The currently logged in user " + user.getEmail() +
@@ -77,6 +94,12 @@ public class FileService {
                 () -> new FileDoesNotExistException("File with id" + fileId + " does not exist"));
     }
 
+    /**
+     * Method for getting all the files of a given folder.
+     * @param folderId
+     * @param token
+     * @return
+     */
     public Stream<File> getAllFilesByFolder(UUID folderId, String token) {
         User user = userService.findUserByToken(token);
         Folder folder = folderRepository.findById(folderId).orElseThrow(
@@ -91,7 +114,12 @@ public class FileService {
         return folder.getFiles().stream();
     }
 
-
+    /**
+     * Method for deleting one file by id
+     * Finds folder by file id.
+     * @param fileId
+     * @param token
+     */
     public void deleteFileById(UUID fileId, String token) {
         User user = userService.findUserByToken(token);
         Folder folder = folderRepository.findFolderByFileId(fileId).orElseThrow(
@@ -109,6 +137,13 @@ public class FileService {
 
     }
 
+    /**
+     * Method for deleting many files by given folder
+     * Deletes the files by selecting the fileids in a List of type string.
+     * @param folderId
+     * @param token
+     * @param listOfIds
+     */
     //deletes many files by adding them the file id to a string array
     public void deleteManyFilesById(UUID folderId, String token, List<String> listOfIds){
         User user = userService.findUserByToken(token);
@@ -129,6 +164,14 @@ public class FileService {
         }
     }
 
+    /**
+     * Method for checking the owner of the folder is the same as the logged-in user
+     * This is to make sure so no one but the owner of folder can alter any of the
+     * content/files in the folder.
+     * @param folder
+     * @param activeUser
+     * @return
+     */
     // This is for checking if the user of the folder is the same as the active token user.
     public boolean checkFolderAuthentication(Folder folder, User activeUser){
         return (folder.getUser().getId() == activeUser.getId());
