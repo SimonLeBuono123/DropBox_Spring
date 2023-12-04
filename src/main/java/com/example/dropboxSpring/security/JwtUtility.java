@@ -16,6 +16,9 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.function.Function;
 
+/**
+ * Class for handling tokens and creating tokens.
+ */
 @Slf4j
 @Component
 public class JwtUtility {
@@ -24,6 +27,12 @@ public class JwtUtility {
     // 15 minutes until token expires
     private int jwtExpiration = (60 * 15);
 
+    /**
+     * Method for generating a token with given email and roles
+     * @param email
+     * @param roles
+     * @return
+     */
     public String generateToken(String email, Collection<? extends GrantedAuthority> roles) {
         SecretKey secrets = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
         return Jwts.builder()
@@ -33,7 +42,11 @@ public class JwtUtility {
                 .signWith(secrets, SignatureAlgorithm.HS256).compact();
     }
 
-    //this extracts the username from the token so one can find the user via token
+    /**
+     * Method for extracting email of token
+     * @param token
+     * @return
+     */
     public String extractEmail(String token) {
         return extractClaim(token, Claims::getSubject);
     }
@@ -47,11 +60,18 @@ public class JwtUtility {
                 .parseClaimsJws(token).getBody();
     }
 
+
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
+    /**
+     * Method for checking validation of tokens with several
+     * catches to check for any type of exception
+     * @param token
+     * @return
+     */
     public boolean validateToken(String token) {
         try {
             SecretKey secrets = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));

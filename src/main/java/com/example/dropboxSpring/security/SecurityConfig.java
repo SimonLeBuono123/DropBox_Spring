@@ -25,6 +25,10 @@ import org.springframework.security.web.access.intercept.RequestAuthorizationCon
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/**
+ * Method for configuring the security of application and
+ * all http routes.
+ */
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -32,6 +36,15 @@ public class SecurityConfig {
 
     private final UserRepository userRepo;
 
+    /**
+     * Method for filtering and altering the routes of application
+     * Such as making some routes only accessible with role User or higher (Admin).
+     * @param security
+     * @param userDetailsService
+     * @param jwtUtility
+     * @return
+     * @throws Exception
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity security, UserDetailsService userDetailsService, JwtUtility jwtUtility) throws Exception {
 
@@ -57,7 +70,7 @@ public class SecurityConfig {
                 ));
         return security.build();
     }
-
+    
     @Bean
     public UserDetailsService userDetailsService(UserRepository userRepository) {
         return new UserDetailsServiceImpl(userRepository);

@@ -14,6 +14,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+/**
+ *
+ */
 @Slf4j
 public class AuthenticationFilter extends OncePerRequestFilter {
     private UserDetailsService userDetailsService;
@@ -25,6 +28,16 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         this.jwtUtility = jwtUtility;
     }
 
+    /**
+     * Method for filtering the authorization of the security
+     * Fetches the token from authorization header and does
+     * codes to check if the token is valid and if the user exists / is valid.
+     * @param request
+     * @param response
+     * @param filterChain
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
         //Authorization header
