@@ -5,7 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
-
+/**
+ * Dto for when getting all the files of a given folder
+ */
 @Data
 @AllArgsConstructor
 @Builder

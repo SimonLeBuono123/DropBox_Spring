@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Class for the model of the table folder
+ */
 @Entity
 @Data
 @AllArgsConstructor

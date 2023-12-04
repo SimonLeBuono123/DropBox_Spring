@@ -7,6 +7,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.UUID;
+
+/**
+ * Class for the model of the table files
+ */
 @Data
 @Entity
 @Table(name = "files")

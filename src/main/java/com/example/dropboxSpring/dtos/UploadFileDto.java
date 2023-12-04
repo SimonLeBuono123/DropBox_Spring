@@ -11,6 +11,10 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
+/**
+ * Dto for a response to when uploading a file and seeing the full File class but
+ * instead of the getting the data with bytes you get instead the content of the file.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

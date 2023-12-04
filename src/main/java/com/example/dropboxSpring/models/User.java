@@ -11,6 +11,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Class for the model of the table user
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
