@@ -20,6 +20,11 @@ public class UserService {
     private final PasswordEncoder encoder;
     private final UserRepository userRepository;
 
+    /**
+     * Method for creating a new user.
+     * @param registerDto
+     * @return
+     */
     public User register(RegisterDto registerDto){
         var user = User.builder()
                 .name(registerDto.getName())
@@ -31,6 +36,12 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    /**
+     * Method for getting the user by extracting the email
+     * from a valid token
+     * @param token
+     * @return
+     */
     public User findUserByToken(String token){
         // extract the users email from the token.
         String userEmail = jwtUtility.extractEmail(token);

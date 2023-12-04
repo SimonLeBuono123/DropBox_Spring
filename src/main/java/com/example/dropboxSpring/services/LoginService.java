@@ -17,7 +17,12 @@ public class LoginService {
     private final AuthenticationManager manager;
     private final JwtUtility jwtUtility;
 
-
+    /**
+     * Method for logging-in on an already created user and generating a token
+     * to user as authorization when creating folders and files.
+     * @param loginDto
+     * @return
+     */
     public String login(LoginDto loginDto){
         manager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword()));
         var user = userRepo.findByEmail(loginDto.getEmail()).orElseThrow();

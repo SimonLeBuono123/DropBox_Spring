@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -29,7 +30,10 @@ public class FileService {
     private UserService userService;
 
     @Autowired
-    public FileService(FileRepository fileRepository, FolderRepository folderRepository, UserService userService) {
+    public FileService(FileRepository fileRepository,
+                       FolderRepository folderRepository,
+                       UserService userService) {
+
         this.fileRepository = fileRepository;
         this.folderRepository = folderRepository;
         this.userService = userService;
@@ -37,6 +41,7 @@ public class FileService {
 
     /**
      * Method for uploading a file to a given folder
+     *
      * @param folderId
      * @param file
      * @param token
@@ -51,13 +56,14 @@ public class FileService {
         User user = userService.findUserByToken(token);
 
         Folder folder = folderRepository.findById(folderId).orElseThrow(
-                () -> new FolderDoesNotExistException("Folder with id " + folderId + " does not exist"));
+                () -> new FolderDoesNotExistException(
+                        "Folder with id " + folderId + " does not exist"));
         // This is for checking if the user of the folder is the same as the active token user.
         if (!checkFolderAuthentication(folder, user)) {
             throw new UserDoesNotMatchOwnerOfFolderException(
                     "The currently logged in user " + user.getEmail() +
                             " does not match the owner of this folder: " +
-                             folder.getUser().getEmail());
+                            folder.getUser().getEmail());
         }
 
         fileRepository.save(newFile);
@@ -67,12 +73,13 @@ public class FileService {
                 newFile.getId(),
                 newFile.getName(),
                 newFile.getType(),
-               new String(newFile.getData(), StandardCharsets.UTF_8)
+                new String(newFile.getData(), StandardCharsets.UTF_8)
         );
     }
 
     /**
      * Method for getting a file by id of given folder.
+     *
      * @param folderId
      * @param fileId
      * @param token
@@ -82,7 +89,8 @@ public class FileService {
         User user = userService.findUserByToken(token);
 
         Folder folder = folderRepository.findById(folderId).orElseThrow(
-                () -> new FolderDoesNotExistException("Folder with id " + folderId + " does not exist"));
+                () -> new FolderDoesNotExistException(
+                        "Folder with id " + folderId + " does not exist"));
 
         if (!checkFolderAuthentication(folder, user)) {
             throw new UserDoesNotMatchOwnerOfFolderException(
@@ -91,11 +99,13 @@ public class FileService {
                             folder.getUser().getEmail());
         }
         return fileRepository.findById(fileId).orElseThrow(
-                () -> new FileDoesNotExistException("File with id" + fileId + " does not exist"));
+                () -> new FileDoesNotExistException(
+                        "File with id" + fileId + " does not exist"));
     }
 
     /**
      * Method for getting all the files of a given folder.
+     *
      * @param folderId
      * @param token
      * @return
@@ -103,9 +113,10 @@ public class FileService {
     public Stream<File> getAllFilesByFolder(UUID folderId, String token) {
         User user = userService.findUserByToken(token);
         Folder folder = folderRepository.findById(folderId).orElseThrow(
-                () -> new FolderDoesNotExistException("Folder with id " + folderId + " does not exist"));
+                () -> new FolderDoesNotExistException(
+                        "Folder with id " + folderId + " does not exist"));
 
-        if(!checkFolderAuthentication(folder, user)) {
+        if (!checkFolderAuthentication(folder, user)) {
             throw new UserDoesNotMatchOwnerOfFolderException(
                     "The currently logged in user " + user.getEmail() +
                             " does not match the owner of this folder: " +
@@ -117,15 +128,18 @@ public class FileService {
     /**
      * Method for deleting one file by id
      * Finds folder by file id.
+     *
      * @param fileId
      * @param token
      */
     public void deleteFileById(UUID fileId, String token) {
         User user = userService.findUserByToken(token);
-        Folder folder = folderRepository.findFolderByFileId(fileId).orElseThrow(
-                () -> new FolderDoesNotExistException("Cannot find folder with file id : " + fileId));
 
-        if(!checkFolderAuthentication(folder, user)) {
+        Folder folder = folderRepository.findFolderByFileId(fileId).orElseThrow(
+                () -> new FolderDoesNotExistException(
+                        "Cannot find folder with file id : " + fileId));
+
+        if (!checkFolderAuthentication(folder, user)) {
             throw new UserDoesNotMatchOwnerOfFolderException(
                     "The currently logged in user " + user.getEmail() +
                             " does not match the owner of this folder: " +
@@ -133,32 +147,37 @@ public class FileService {
         }
         folder.getFiles().remove(fileRepository.findById(fileId).orElseThrow());
         folderRepository.save(folder);
-            fileRepository.deleteById(fileId);
+        fileRepository.deleteById(fileId);
 
     }
 
     /**
      * Method for deleting many files by given folder
      * Deletes the files by selecting the fileids in a List of type string.
+     *
      * @param folderId
      * @param token
      * @param listOfIds
      */
     //deletes many files by adding them the file id to a string array
-    public void deleteManyFilesById(UUID folderId, String token, List<String> listOfIds){
+    public void deleteManyFilesById(UUID folderId, String token, List<String> listOfIds) {
         User user = userService.findUserByToken(token);
-        Folder folder = folderRepository.findById(folderId).orElseThrow(
-                () -> new FolderDoesNotExistException("Cannot find folder with file id : " + folderId));
 
-        if(!checkFolderAuthentication(folder, user)) {
+        Folder folder = folderRepository.findById(folderId)
+                .orElseThrow(
+                        () -> new FolderDoesNotExistException(
+                                "Cannot find folder with file id : " + folderId));
+
+        if (!checkFolderAuthentication(folder, user)) {
             throw new UserDoesNotMatchOwnerOfFolderException(
                     "The currently logged in user " + user.getEmail() +
                             " does not match the owner of this folder: " +
                             folder.getUser().getEmail());
         }
 
-        for(var id : listOfIds){
-            folder.getFiles().remove(fileRepository.findById(UUID.fromString(id)).orElseThrow());
+        for (var id : listOfIds) {
+            folder.getFiles().remove(fileRepository.findById(UUID.fromString(id))
+                    .orElseThrow());
             folderRepository.save(folder);
             fileRepository.deleteById(UUID.fromString(id));
         }
@@ -168,12 +187,13 @@ public class FileService {
      * Method for checking the owner of the folder is the same as the logged-in user
      * This is to make sure so no one but the owner of folder can alter any of the
      * content/files in the folder.
+     *
      * @param folder
      * @param activeUser
      * @return
      */
     // This is for checking if the user of the folder is the same as the active token user.
-    public boolean checkFolderAuthentication(Folder folder, User activeUser){
+    public boolean checkFolderAuthentication(Folder folder, User activeUser) {
         return (folder.getUser().getId() == activeUser.getId());
     }
 }
