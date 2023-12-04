@@ -60,7 +60,14 @@ public class FileController {
         }
     }
 
-    //http get method for getting all the files of a certain folder.
+    /**
+     * Http get method for getting all the files of a given folder
+     * The fileDto class also has a variabel than return an url of the given file
+     * which also includes a download.
+     * @param token
+     * @param folderId
+     * @return
+     */
     @GetMapping("/all/folder/{folderId}")
     public ResponseEntity<List<FileDto>> getAllFilesByFolder(
             @RequestHeader("Authorization") String token,
@@ -88,7 +95,14 @@ public class FileController {
         return ResponseEntity.ok(files);
     }
 
-    // Http method for getting and downloading a certain file by id.
+
+    /**
+     * Http method for getting and downloading a chosen file by id.
+     * @param token
+     * @param fileId
+     * @param folderId
+     * @return
+     */
     @GetMapping("/{fileId}/folder/{folderId}")
     public ResponseEntity<ByteArrayResource> downloadFile(
             @RequestHeader("Authorization") String token,
@@ -108,7 +122,16 @@ public class FileController {
                 .body(new ByteArrayResource(file.getData()));
     }
 
-    //Http method for deleting a file.
+    /**
+     * Http method for deleting one file by id.
+     * This method unlike the others does not take in the folder id as a pathvariabel
+     * because it searches for the folder by the file id.
+     * I did this because I wanted to try a different approach on getting a folder with help
+     * of a one-to-many table for folder and files.
+     * @param token
+     * @param fileId
+     * @return
+     */
     @DeleteMapping("/delete/{fileId}")
     public ResponseEntity<MessageDto> deleteFileById(
             @RequestHeader("Authorization") String token,
@@ -126,6 +149,14 @@ public class FileController {
         }
     }
 
+
+    /**
+     * Http delete method for deleting many files of given folder.
+     * @param token
+     * @param folderId
+     * @param listOfFileIds
+     * @return
+     */
     @DeleteMapping("/delete/many/{folderId}")
     public ResponseEntity<MessageDto> deleteManyFilesByFolder(
             @RequestHeader("Authorization") String token,

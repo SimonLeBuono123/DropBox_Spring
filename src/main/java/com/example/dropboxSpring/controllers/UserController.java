@@ -21,6 +21,11 @@ public class UserController {
         this.userService = userService;
     }
 
+    /**
+     * Http post method for creating a new user
+     * @param registerDto
+     * @return
+     */
     @PostMapping("/register")
     public ResponseEntity<User> registerUser(
             @RequestBody RegisterDto registerDto

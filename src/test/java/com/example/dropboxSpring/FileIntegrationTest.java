@@ -124,7 +124,7 @@ public class FileIntegrationTest {
 
     @Transactional
     @Test
-    void Given_MultipleFilesInFolderSelected_When_ArrayOfSelectedFileIds_Then_deleteAllSelectedIds() throws Exception {
+    void Given_AllFilesInFolderSelected_When_StringArrayOfSelectedFileIds_Then_deleteAllSelectedIdsAndReturnEmpty() throws Exception {
         //given
         var user = User.builder()
                 .email("test@test")

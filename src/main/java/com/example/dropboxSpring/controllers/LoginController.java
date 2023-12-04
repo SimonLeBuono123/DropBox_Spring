@@ -20,6 +20,12 @@ public class LoginController {
         this.loginService = loginService;
     }
 
+    /**
+     * Http post method for logging in and creating a token to use as authorization
+     * for later whe creating folders and files.
+     * @param loginDto
+     * @return
+     */
     @PostMapping("/login")
     public ResponseEntity<String> login(
             @RequestBody LoginDto loginDto
@@ -33,6 +39,11 @@ public class LoginController {
     }
 
 
+    /**
+     * Has no real usage as it was more for testing role hierarchy and to see
+     * what admins can access and what users cannot access.
+     * @return
+     */
     @GetMapping("/adminTest")
     public ResponseEntity<String> testIfAdmin(){
         return ResponseEntity.ok("Welcome to the admin lounge!");
