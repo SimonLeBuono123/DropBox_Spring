@@ -2,6 +2,7 @@ package com.example.dropboxSpring.services;
 
 import com.example.dropboxSpring.dtos.UploadFileDto;
 import com.example.dropboxSpring.exceptions.FileDoesNotExistException;
+import com.example.dropboxSpring.exceptions.FolderDoesNotContainFileException;
 import com.example.dropboxSpring.exceptions.FolderDoesNotExistException;
 import com.example.dropboxSpring.exceptions.UserDoesNotMatchOwnerOfFolderException;
 import com.example.dropboxSpring.models.File;
@@ -160,7 +161,7 @@ public class FileService {
      * @param listOfIds
      */
     //deletes many files by adding them the file id to a string array
-    public void deleteManyFilesById(UUID folderId, String token, List<String> listOfIds) {
+    public void deleteManyFilesById(UUID folderId, String token, List<String> listOfIds) throws Exception {
         User user = userService.findUserByToken(token);
 
         Folder folder = folderRepository.findById(folderId)
@@ -174,8 +175,11 @@ public class FileService {
                             " does not match the owner of this folder: " +
                             folder.getUser().getEmail());
         }
-
         for (var id : listOfIds) {
+            if(!folder.getFiles().contains(fileRepository.findById(UUID.fromString(id)).orElseThrow())){
+                throw new FolderDoesNotContainFileException(
+                        "The file of id: " + id + " is not a part of this folder");
+            }
             folder.getFiles().remove(fileRepository.findById(UUID.fromString(id))
                     .orElseThrow());
             folderRepository.save(folder);

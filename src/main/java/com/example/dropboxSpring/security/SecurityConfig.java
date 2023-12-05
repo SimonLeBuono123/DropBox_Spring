@@ -39,6 +39,7 @@ public class SecurityConfig {
     /**
      * Method for filtering and altering the routes of application
      * Such as making some routes only accessible with role User or higher (Admin).
+     * And adding the token authentication
      * @param security
      * @param userDetailsService
      * @param jwtUtility
@@ -70,17 +71,36 @@ public class SecurityConfig {
                 ));
         return security.build();
     }
-    
+
     @Bean
     public UserDetailsService userDetailsService(UserRepository userRepository) {
         return new UserDetailsServiceImpl(userRepository);
     }
+
+    /**
+     * Method for setting up the hierarchy of the roles
+     * of the routes. So admin being higher in the hierarchy
+     * means admin roles has access to User roles but
+     * users do not have access to admin roles.
+     * @return
+     */
     @Bean
     public RoleHierarchy roleHierarchy(){
         RoleHierarchyImpl role = new RoleHierarchyImpl();
         role.setHierarchy("ROLE_ADMIN > ROLE_USER");
         return role;
     }
+
+    /**
+     * Method for management of authentication object which here is authentication provider
+     * and is also used in loginService when checking if the user
+     * has entered credentials.
+     * It is also part of the security filter chain and is checked
+     * on all routes that needs an authentication.
+     * @param config
+     * @return
+     * @throws Exception
+     */
     @Bean
     AuthenticationManager authenticationManager(
             AuthenticationConfiguration config
@@ -88,6 +108,12 @@ public class SecurityConfig {
         return config.getAuthenticationManager();
     }
 
+    /**
+     * Method for checking credentials(email and password) of the user when logging in
+     * and also when logged in. Returns unauthorized if credentials are incorrect
+     * on login.
+     * @return
+     */
     @Bean
     AuthenticationProvider authenticationProvider() {
         var dao = new DaoAuthenticationProvider();
@@ -96,6 +122,10 @@ public class SecurityConfig {
         return dao;
     }
 
+    /**
+     * Method for encrypting a password with bcrypt encryption
+     * @return
+     */
     @Bean
     public PasswordEncoder encoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
