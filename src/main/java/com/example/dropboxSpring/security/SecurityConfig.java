@@ -40,6 +40,7 @@ public class SecurityConfig {
      * Method for filtering and altering the routes of application
      * Such as making some routes only accessible with role User or higher (Admin).
      * And adding the token authentication
+     *
      * @param security
      * @param userDetailsService
      * @param jwtUtility
@@ -47,10 +48,18 @@ public class SecurityConfig {
      * @throws Exception
      */
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity security, UserDetailsService userDetailsService, JwtUtility jwtUtility) throws Exception {
+    public SecurityFilterChain filterChain(
+            HttpSecurity security,
+            UserDetailsService userDetailsService,
+            JwtUtility jwtUtility) throws Exception {
 
-        var user = AuthorityAuthorizationManager.<RequestAuthorizationContext>hasRole("USER");
-        var admin = AuthorityAuthorizationManager.<RequestAuthorizationContext >hasRole("ADMIN");
+        var user =
+                AuthorityAuthorizationManager.
+                        <RequestAuthorizationContext>hasRole("USER");
+        var admin =
+                AuthorityAuthorizationManager.
+                        <RequestAuthorizationContext>hasRole("ADMIN");
+
         user.setRoleHierarchy(roleHierarchy());
         admin.setRoleHierarchy(roleHierarchy());
 
@@ -64,8 +73,11 @@ public class SecurityConfig {
                         .requestMatchers("/adminTest").access(admin)
                         .anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider())
-                .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(new AuthenticationFilter(userDetailsService, jwtUtility), UsernamePasswordAuthenticationFilter.class)
+                .sessionManagement((session) ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(
+                        new AuthenticationFilter(userDetailsService, jwtUtility)
+                        , UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling((exception) -> exception.authenticationEntryPoint(
                         new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)
                 ));
@@ -82,10 +94,11 @@ public class SecurityConfig {
      * of the routes. So admin being higher in the hierarchy
      * means admin roles has access to User roles but
      * users do not have access to admin roles.
+     *
      * @return
      */
     @Bean
-    public RoleHierarchy roleHierarchy(){
+    public RoleHierarchy roleHierarchy() {
         RoleHierarchyImpl role = new RoleHierarchyImpl();
         role.setHierarchy("ROLE_ADMIN > ROLE_USER");
         return role;
@@ -97,6 +110,7 @@ public class SecurityConfig {
      * has entered credentials.
      * It is also part of the security filter chain and is checked
      * on all routes that needs an authentication.
+     *
      * @param config
      * @return
      * @throws Exception
@@ -112,6 +126,7 @@ public class SecurityConfig {
      * Method for checking credentials(email and password) of the user when logging in
      * and also when logged in. Returns unauthorized if credentials are incorrect
      * on login.
+     *
      * @return
      */
     @Bean
@@ -124,6 +139,7 @@ public class SecurityConfig {
 
     /**
      * Method for encrypting a password with bcrypt encryption
+     *
      * @return
      */
     @Bean

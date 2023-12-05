@@ -14,6 +14,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     /**
      * Method for getting the user by username when successfully logging-in and also when using
      * a valid token. Although I get the user by Email instead of username.
+     *
      * @param username
      * @return
      * @throws UsernameNotFoundException

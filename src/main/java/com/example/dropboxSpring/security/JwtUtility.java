@@ -29,12 +29,14 @@ public class JwtUtility {
 
     /**
      * Method for generating a token with given email and roles
+     *
      * @param email
      * @param roles
      * @return
      */
     public String generateToken(String email, Collection<? extends GrantedAuthority> roles) {
         SecretKey secrets = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
+
         return Jwts.builder()
                 .setSubject(email).claim("role", roles)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
@@ -44,6 +46,7 @@ public class JwtUtility {
 
     /**
      * Method for extracting email of token
+     *
      * @param token
      * @return
      */
@@ -53,6 +56,7 @@ public class JwtUtility {
 
     public Claims extractAllClaims(String token) {
         SecretKey secrets = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
+
         return Jwts
                 .parserBuilder()
                 .setSigningKey(secrets)
@@ -69,6 +73,7 @@ public class JwtUtility {
     /**
      * Method for checking validation of tokens with several
      * catches to check for any type of exception
+     *
      * @param token
      * @return
      */
@@ -78,18 +83,23 @@ public class JwtUtility {
             Jwts.parserBuilder().setSigningKey(secrets).build().parseClaimsJws(token);
             return true;
         } catch (SignatureException e) {
+
             log.info("Invalid JWT signature.");
-           log.trace("Invalid JWT signature trace: {}", e);
+            log.trace("Invalid JWT signature trace: {}", e);
         } catch (MalformedJwtException e) {
+
             log.info("Invalid JWT token.");
             log.trace("Invalid JWT token trace: {}", e);
         } catch (ExpiredJwtException e) {
+
             log.info("Expired JWT token.");
             log.trace("Expired JWT token trace: {}", e);
         } catch (UnsupportedJwtException e) {
+
             log.info("Unsupported JWT token.");
             log.trace("Unsupported JWT token trace: {}", e);
         } catch (IllegalArgumentException e) {
+
             log.info("JWT token compact of handler are invalid.");
             log.trace("JWT token compact of handler are invalid trace: {}", e);
         }

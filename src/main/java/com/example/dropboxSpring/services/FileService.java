@@ -50,7 +50,9 @@ public class FileService {
      * @throws IOException
      */
     @Transactional
-    public UploadFileDto uploadFile(UUID folderId, MultipartFile file, String token) throws IOException {
+    public UploadFileDto uploadFile(UUID folderId,
+                                    MultipartFile file,
+                                    String token) throws IOException {
 
         String name = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         File newFile = new File(name, file.getContentType(), file.getBytes());
@@ -161,7 +163,8 @@ public class FileService {
      * @param listOfIds
      */
     //deletes many files by adding them the file id to a string array
-    public void deleteManyFilesById(UUID folderId, String token, List<String> listOfIds) throws Exception {
+    public void deleteManyFilesById(UUID folderId, String token,
+                                    List<String> listOfIds) throws Exception {
         User user = userService.findUserByToken(token);
 
         Folder folder = folderRepository.findById(folderId)
@@ -176,7 +179,9 @@ public class FileService {
                             folder.getUser().getEmail());
         }
         for (var id : listOfIds) {
-            if(!folder.getFiles().contains(fileRepository.findById(UUID.fromString(id)).orElseThrow())){
+            if (!folder.getFiles().contains(
+                    fileRepository.findById(UUID.fromString(id)).orElseThrow())
+            ) {
                 throw new FolderDoesNotContainFileException(
                         "The file of id: " + id + " is not a part of this folder");
             }

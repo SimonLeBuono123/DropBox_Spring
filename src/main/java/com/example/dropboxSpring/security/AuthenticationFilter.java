@@ -23,7 +23,10 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
     private JwtUtility jwtUtility;
 
-    public AuthenticationFilter(UserDetailsService userDetailsService, JwtUtility jwtUtility) {
+    public AuthenticationFilter(
+            UserDetailsService userDetailsService,
+            JwtUtility jwtUtility
+    ) {
         this.userDetailsService = userDetailsService;
         this.jwtUtility = jwtUtility;
     }
@@ -32,6 +35,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
      * Method for filtering the authorization of the security
      * Fetches the token from authorization header and does
      * codes to check if the token is valid and if the user exists / is valid.
+     *
      * @param request
      * @param response
      * @param filterChain
@@ -39,7 +43,12 @@ public class AuthenticationFilter extends OncePerRequestFilter {
      * @throws IOException
      */
     @Override
-    protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull FilterChain filterChain
+    ) throws ServletException, IOException {
+
         //Authorization header
         var authHeader = request.getHeader("Authorization");
         // Bearer
@@ -47,6 +56,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
+        
         String token = authHeader.substring(7);
         jwtUtility.validateToken(token);
         String email = jwtUtility.extractEmail(token);
@@ -56,7 +66,12 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
             var user = this.userDetailsService.loadUserByUsername(email);
             if (user != null) {
-                var auth = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword(), user.getAuthorities());
+
+                var auth = new UsernamePasswordAuthenticationToken(
+                        user.getUsername(),
+                        user.getPassword(),
+                        user.getAuthorities());
+
                 auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 log.info("Email of token holder : {}", email);
                 SecurityContextHolder.getContext().setAuthentication(auth);
