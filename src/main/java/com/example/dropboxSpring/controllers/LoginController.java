@@ -2,7 +2,6 @@ package com.example.dropboxSpring.controllers;
 
 import com.example.dropboxSpring.dtos.LoginDto;
 import com.example.dropboxSpring.services.LoginService;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
