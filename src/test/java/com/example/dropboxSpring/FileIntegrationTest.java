@@ -62,7 +62,7 @@ public class FileIntegrationTest {
     /*this is a method for testing if a file and its content gets successfully uploaded
     */
     @Test
-    void uploadNewFileSuccess() throws Exception {
+    void given_iHaveSelectedAFolder_when_iUploadFileToMyFolder_then_iGetAOkStatusResponseAndExpectAnUploadFileDtoObjectWithValuesMatching() throws Exception {
         //given
         var user = User.builder()
                 .email("test@test")
@@ -117,7 +117,7 @@ public class FileIntegrationTest {
 
     @Transactional
     @Test
-    void Given_AllFilesInFolderSelected_When_StringArrayOfSelectedFileIds_Then_deleteAllSelectedIdsAndReturnEmpty() throws Exception {
+    void given_IHaveSelectedAllFilesInMyFolder_When_iDeleteTheFilesByAnRequestWithListOfStringIds_Then_iGetAResponseStatusOkAndExpectAmessageAndaEmptyArray() throws Exception {
         //given
         var user = User.builder()
                 .email("test@test")

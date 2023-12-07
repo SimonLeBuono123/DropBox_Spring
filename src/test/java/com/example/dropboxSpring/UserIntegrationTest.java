@@ -38,7 +38,7 @@ public class UserIntegrationTest {
     }
 
     @Test
-    void registerUserSuccess() throws Exception {
+    void given_iHaveSelectedAllMyCredentials_when_registerWithSelectedCredentials_then_iGetAnResponseStatusOkAndExpectAnMessageDtoObjectWithAllItsValuesMatching() throws Exception {
         //given
         var email = "test@test.com";
         var name = "test";
