@@ -1,9 +1,7 @@
 package com.example.dropboxSpring;
 
-import com.example.dropboxSpring.models.File;
 import com.example.dropboxSpring.models.Folder;
 import com.example.dropboxSpring.models.User;
-import com.example.dropboxSpring.repositories.FileRepository;
 import com.example.dropboxSpring.repositories.FolderRepository;
 import com.example.dropboxSpring.repositories.UserRepository;
 import com.example.dropboxSpring.security.JwtUtility;
@@ -25,9 +23,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,8 +48,6 @@ public class FileIntegrationTest {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    FileRepository fileRepository;
     @Autowired
     UserRepository userRepository;
 

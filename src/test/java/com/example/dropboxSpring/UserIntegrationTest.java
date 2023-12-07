@@ -1,21 +1,15 @@
 package com.example.dropboxSpring;
 
 import com.example.dropboxSpring.dtos.RegisterDto;
-import com.example.dropboxSpring.models.User;
-import com.example.dropboxSpring.repositories.UserRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.assertj.core.api.Assertions;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.jdbc.JdbcTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
@@ -28,13 +22,6 @@ import java.util.Arrays;
 @AutoConfigureMockMvc(addFilters = false)
 @TestPropertySource("classpath:application-test.properties")
 public class UserIntegrationTest {
-    @Autowired
-    UserRepository userRepository;
-
-
-    @Autowired
-    PasswordEncoder encoder;
-
     @Autowired
     JdbcTemplate jdbcTemplate;
 
@@ -57,7 +44,6 @@ public class UserIntegrationTest {
         var name = "test";
         var password = "password123";
         var role = "ROLE_USER";
-        var authorities = Arrays.asList(role);
 
         var registerDto = new RegisterDto();
 
