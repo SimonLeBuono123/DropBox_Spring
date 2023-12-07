@@ -17,7 +17,10 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-//class for handling files http routes.
+/**
+ * Class for handling different http methods and routes
+ * for the model entity file
+ */
 @RequestMapping("/file")
 @RestController
 public class FileController {

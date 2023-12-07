@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- *
+ * Class for handling different http methods and routes
+ * for the model entity user
  */
 @RestController
 @RequestMapping("/user")

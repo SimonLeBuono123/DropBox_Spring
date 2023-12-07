@@ -9,6 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Class for handling different http methods and routes
+ * for the model entity folder
+ */
 @RestController
 @RequestMapping("/folder")
 public class FolderController {

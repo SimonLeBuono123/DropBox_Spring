@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Class for handling different http methods and routes
+ * for when logging in on user and a test route for admin access.
+ */
 @RestController
 public class LoginController {
     private LoginService loginService;
