@@ -36,7 +36,7 @@ public class UserService {
         ResponseRegisterDto responseDto = new ResponseRegisterDto();
         responseDto.setEmail(user.getEmail());
         responseDto.setName(user.getName());
-        responseDto.setRoles(Arrays.asList(user.getAuthorities().toString()));
+        responseDto.setRoles(Arrays.asList("ROLE_USER"));
 
         userRepository.save(user);
 

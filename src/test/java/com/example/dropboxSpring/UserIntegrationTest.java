@@ -9,6 +9,7 @@ import org.assertj.core.api.Assertions;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -55,7 +56,8 @@ public class UserIntegrationTest {
         var email = "test@test.com";
         var name = "test";
         var password = "password123";
-        var authorities = Arrays.asList("ROLE_USER");
+        var role = "ROLE_USER";
+        var authorities = Arrays.asList(role);
 
         var registerDto = new RegisterDto();
 
@@ -77,10 +79,10 @@ public class UserIntegrationTest {
         mvc.perform(request)
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json("{}"))
-                .andExpect(MockMvcResultMatchers.jsonPath(("$.name"), Matchers.is(name)))
-                .andExpect(MockMvcResultMatchers.jsonPath(("$.email"), Matchers.is(email)))
-                .andExpect(MockMvcResultMatchers.jsonPath(("$.password"), Matchers.not(password)))
-                .andExpect(MockMvcResultMatchers.jsonPath(("$.authorities[*].authority"), Matchers.contains(authorities.get(0))));
+                .andExpect(MockMvcResultMatchers.jsonPath(("$.message"), Matchers.is("User created successfully!")))
+                .andExpect(MockMvcResultMatchers.jsonPath(("$.data.name"), Matchers.is(name)))
+                .andExpect(MockMvcResultMatchers.jsonPath(("$.data.email"), Matchers.is(email)))
+                .andExpect(MockMvcResultMatchers.jsonPath(("$.data.roles"), Matchers.contains(role)));
 
     }
 }
