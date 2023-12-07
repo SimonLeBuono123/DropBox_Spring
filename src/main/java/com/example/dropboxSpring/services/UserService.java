@@ -1,6 +1,7 @@
 package com.example.dropboxSpring.services;
 
 import com.example.dropboxSpring.dtos.RegisterDto;
+import com.example.dropboxSpring.dtos.ResponseRegisterDto;
 import com.example.dropboxSpring.models.User;
 import com.example.dropboxSpring.repositories.UserRepository;
 import com.example.dropboxSpring.security.JwtUtility;
@@ -25,15 +26,21 @@ public class UserService {
      * @param registerDto
      * @return
      */
-    public User register(RegisterDto registerDto) {
+    public ResponseRegisterDto register(RegisterDto registerDto) {
         var user = User.builder()
                 .name(registerDto.getName())
                 .email(registerDto.getEmail())
                 .password(encoder.encode(registerDto.getPassword()))
                 .authorities(Arrays.asList("ROLE_USER"))
                 .build();
+        ResponseRegisterDto responseDto = new ResponseRegisterDto();
+        responseDto.setEmail(user.getEmail());
+        responseDto.setName(user.getName());
+        responseDto.setRoles(Arrays.asList(user.getAuthorities().toString()));
 
-        return userRepository.save(user);
+        userRepository.save(user);
+
+        return responseDto;
     }
 
     /**

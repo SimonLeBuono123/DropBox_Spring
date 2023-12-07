@@ -56,7 +56,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-        
+
         String token = authHeader.substring(7);
         jwtUtility.validateToken(token);
         String email = jwtUtility.extractEmail(token);

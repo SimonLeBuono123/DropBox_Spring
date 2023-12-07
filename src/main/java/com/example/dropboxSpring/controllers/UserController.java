@@ -1,9 +1,13 @@
 package com.example.dropboxSpring.controllers;
 
+import com.example.dropboxSpring.dtos.MessageDto;
 import com.example.dropboxSpring.dtos.RegisterDto;
+import com.example.dropboxSpring.dtos.ResponseRegisterDto;
 import com.example.dropboxSpring.models.User;
 import com.example.dropboxSpring.services.UserService;
+import org.aspectj.bridge.Message;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,13 +30,26 @@ public class UserController {
 
     /**
      * Http post method for creating a new user
+     *
      * @param registerDto
      * @return
      */
     @PostMapping("/register")
-    public ResponseEntity<User> registerUser(
+    public ResponseEntity<MessageDto> registerUser(
             @RequestBody RegisterDto registerDto
-            ){
-        return ResponseEntity.ok(userService.register(registerDto));
+    ) {
+        String message = "";
+        try {
+
+            ResponseRegisterDto responseDto = userService.register(registerDto);
+            message = "User created successfully!";
+
+            return ResponseEntity.ok(new MessageDto(message, responseDto));
+        } catch (Exception e) {
+
+            message = e.getMessage();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new MessageDto(message));
+        }
+
     }
 }
