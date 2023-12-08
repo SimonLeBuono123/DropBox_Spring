@@ -8,6 +8,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Interface for handling all queries of entity model
+ * Folder
+ */
 public interface FolderRepository extends JpaRepository<Folder, UUID> {
     @Query(value = """
             SELECT fo.id, fo.name, fo.user_id FROM folder_files LEFT JOIN files f ON f.id = folder_files.files_id

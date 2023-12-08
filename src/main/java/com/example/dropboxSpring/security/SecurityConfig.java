@@ -84,6 +84,11 @@ public class SecurityConfig {
         return security.build();
     }
 
+    /**
+     * Method for finding and loading the user from the database.
+     * @param userRepository
+     * @return
+     */
     @Bean
     public UserDetailsService userDetailsService(UserRepository userRepository) {
         return new UserDetailsServiceImpl(userRepository);

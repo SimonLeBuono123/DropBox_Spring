@@ -7,6 +7,10 @@ import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
 
+/**
+ * Interface for handling all queries of entity model
+ * File
+ */
 @Repository
 public interface FileRepository extends JpaRepository<File, UUID> {
 

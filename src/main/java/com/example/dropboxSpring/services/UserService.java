@@ -27,12 +27,14 @@ public class UserService {
      * @return
      */
     public ResponseRegisterDto register(RegisterDto registerDto) {
+
         var user = User.builder()
                 .name(registerDto.getName())
                 .email(registerDto.getEmail())
                 .password(encoder.encode(registerDto.getPassword()))
                 .authorities(Arrays.asList("ROLE_USER"))
                 .build();
+
         ResponseRegisterDto responseDto = new ResponseRegisterDto();
         responseDto.setEmail(user.getEmail());
         responseDto.setName(user.getName());
@@ -53,6 +55,7 @@ public class UserService {
     public User findUserByToken(String token) {
         // extract the users email from the token.
         String userEmail = jwtUtility.extractEmail(token);
+
         return userRepository.findByEmail(userEmail).orElseThrow(
                 () -> new UsernameNotFoundException(
                         "Invalid email: " + userEmail));
