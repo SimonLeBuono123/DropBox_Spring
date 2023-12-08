@@ -58,7 +58,12 @@ public class JwtUtility {
      * @return
      */
     public String extractEmail(String token) {
-        return extractClaim(token, Claims::getSubject);
+        try {
+            return extractClaim(token, Claims::getSubject);
+        }catch(Exception e){
+           validateToken(token);
+        }
+       return null;
     }
 
     public Claims extractAllClaims(String token) {
