@@ -49,6 +49,11 @@ public class FolderController {
         }
     }
 
+    /**
+     * Http get method for finding all folders of logged in user.
+     * @param token
+     * @return
+     */
     @GetMapping("/all")
     public ResponseEntity<List<Folder>> getAllFolderByUser(
             @RequestHeader("Authorization") String token

@@ -48,6 +48,11 @@ public class FolderService {
         return folderRepository.save(folder);
     }
 
+    /**
+     * Method for finding all folders of logged in user.
+     * @param token
+     * @return
+     */
     public List<Folder> findAllFoldersOfUser(String token){
 
         User user = userService.findUserByToken(token);
