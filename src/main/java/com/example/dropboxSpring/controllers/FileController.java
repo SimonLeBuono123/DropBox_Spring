@@ -6,6 +6,7 @@ import com.example.dropboxSpring.dtos.UploadFileDto;
 import com.example.dropboxSpring.models.File;
 import com.example.dropboxSpring.repositories.FileRepository;
 import com.example.dropboxSpring.services.FileService;
+import com.example.dropboxSpring.utils.TokenStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.*;
@@ -52,7 +53,7 @@ public class FileController {
             @PathVariable String folderId
     ) {
         String message = "";
-        String reTokened = token.split(" ")[1].trim();
+        String reTokened = TokenStringUtils.removeEmptySpace(token);
         try {
 
             UploadFileDto result = fileService.uploadFile(UUID.fromString(folderId), file, reTokened);
@@ -77,7 +78,7 @@ public class FileController {
             @PathVariable String folderId
     ) {
 
-        String reTokened = token.split(" ")[1].trim();
+        String reTokened = TokenStringUtils.removeEmptySpace(token);
         List<FileDto> files = fileService
                 .getAllFilesByFolder(UUID.fromString(folderId), reTokened)
                 .map(file -> {
@@ -112,7 +113,7 @@ public class FileController {
             @PathVariable String fileId,
             @PathVariable String folderId
     ) {
-        String reTokened = token.split(" ")[1].trim();
+        String reTokened = TokenStringUtils.removeEmptySpace(token);
 
         File file = fileService.getFileById(
                 UUID.fromString(folderId),
@@ -140,7 +141,7 @@ public class FileController {
             @RequestHeader("Authorization") String token,
             @PathVariable String fileId
     ) {
-        String reTokened = token.split(" ")[1].trim();
+        String reTokened = TokenStringUtils.removeEmptySpace(token);
         String message = "";
         try {
             fileService.deleteFileById(UUID.fromString(fileId), reTokened);
@@ -166,7 +167,7 @@ public class FileController {
             @PathVariable String folderId,
             @RequestBody List<String> listOfFileIds
     ){
-        String reTokened = token.split(" ")[1].trim();
+        String reTokened = TokenStringUtils.removeEmptySpace(token);
         String message = "";
         try {
             fileService.deleteManyFilesById(UUID.fromString(folderId), reTokened, listOfFileIds);

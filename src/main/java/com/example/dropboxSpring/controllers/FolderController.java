@@ -2,12 +2,14 @@ package com.example.dropboxSpring.controllers;
 
 
 import com.example.dropboxSpring.dtos.CreateFolderDto;
-import com.example.dropboxSpring.exceptions.FolderAlreadyExistsException;
+import com.example.dropboxSpring.exceptions.FolderNameOfUserAlreadyExistsException;
 import com.example.dropboxSpring.services.FolderService;
 import com.example.dropboxSpring.utils.TokenStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
 
 /**
  * Class for handling different http methods and routes
@@ -35,8 +37,8 @@ public class FolderController {
     public ResponseEntity<?> createFolder(
             @RequestHeader("Authorization") String token,
             @RequestBody CreateFolderDto folderDto
-            ) throws FolderAlreadyExistsException {
-        //For removing empty space that gets added when getting token from header
+            ) throws FolderNameOfUserAlreadyExistsException {
+        //For removing empty space and the first bearer that gets added when getting token from authorization and returns
         String reTokened = TokenStringUtils.removeEmptySpace(token);
         try {
             return ResponseEntity.ok(folderService.createFolder(reTokened, folderDto));
