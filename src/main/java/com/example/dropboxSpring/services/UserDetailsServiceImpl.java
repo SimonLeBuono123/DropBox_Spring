@@ -6,6 +6,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+/**
+ * Class for finding and loading the user from the database
+ * It is also used for checking the authentication for when logging in.
+ */
+
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
 

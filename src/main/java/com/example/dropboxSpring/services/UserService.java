@@ -12,6 +12,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 
+/**
+ * Class for providing business functionality to entity model User.
+ */
+
 @Service
 @RequiredArgsConstructor
 public class UserService {

@@ -8,6 +8,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
+/**
+ * Class for providing business functionality when logging in to
+ * user.
+ */
+
 @Service
 @RequiredArgsConstructor
 public class LoginService {

@@ -23,6 +23,10 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+/**
+ * Class for providing business functionality to entity model File.
+ */
+
 @Service
 public class FileService {
 
