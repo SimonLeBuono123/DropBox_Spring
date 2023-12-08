@@ -56,6 +56,7 @@ public class SecurityConfig {
         var user =
                 AuthorityAuthorizationManager.
                         <RequestAuthorizationContext>hasRole("USER");
+
         var admin =
                 AuthorityAuthorizationManager.
                         <RequestAuthorizationContext>hasRole("ADMIN");

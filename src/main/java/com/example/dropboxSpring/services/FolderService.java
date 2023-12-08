@@ -56,6 +56,8 @@ public class FolderService {
      * @return
      */
     private boolean containsName(List<Folder> folders, String folderName) {
-        return folders.stream().map(Folder::getName).anyMatch(folderName::equals);
+        return folders.stream()
+                .map(Folder::getName)
+                .anyMatch(folderName::equals);
     }
 }

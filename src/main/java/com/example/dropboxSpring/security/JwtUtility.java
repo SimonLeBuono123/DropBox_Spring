@@ -66,6 +66,11 @@ public class JwtUtility {
         return null;
     }
 
+    /**
+     * Method for extracting all claims and acquiring the body of the token (email).
+     * @param token
+     * @return
+     */
     public Claims extractAllClaims(String token) {
         SecretKey secrets = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
 
@@ -76,7 +81,13 @@ public class JwtUtility {
                 .parseClaimsJws(token).getBody();
     }
 
-
+    /**
+     * Method for extracting the claim from the token.
+     * @param token
+     * @param claimsResolver
+     * @return
+     * @param <T>
+     */
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
@@ -84,7 +95,7 @@ public class JwtUtility {
 
     /**
      * Method for checking validation of tokens with several
-     * catches to check for any type of exception
+     * catches to check for any type of exception that may come
      *
      * @param token
      * @return
