@@ -172,7 +172,7 @@ public class FileController {
         try {
             fileService.deleteManyFilesById(UUID.fromString(folderId), reTokened, listOfFileIds);
             message = "Files successfully deleted";
-            return ResponseEntity.ok(new MessageDto(message, fileRepository.findAll()));
+            return ResponseEntity.ok(new MessageDto(message, fileRepository.findByFolderId(folderId)));
         }catch (Exception e){
             message = e.getMessage();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new MessageDto(message));
