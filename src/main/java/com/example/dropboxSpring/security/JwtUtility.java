@@ -2,6 +2,7 @@ package com.example.dropboxSpring.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.io.Encoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
@@ -22,8 +23,14 @@ import java.util.function.Function;
 @Slf4j
 @Component
 public class JwtUtility {
-    @Value("${jwt.secret}")
-    private String secret;
+    /**
+     * Generates a random secret on every start/restart of program
+     * Meaning that the token even if not expired will not be valid
+     * on the next start of program as the secret will be changed.
+     * This is to make it a slight bit harder to decode a secret.
+     */
+    private SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    private String secret = Encoders.BASE64.encode(key.getEncoded());
     // 15 minutes until token expires
     private int jwtExpiration = (60 * 15);
 
