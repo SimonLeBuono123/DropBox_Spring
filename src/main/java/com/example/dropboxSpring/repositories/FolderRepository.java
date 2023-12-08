@@ -4,6 +4,7 @@ import com.example.dropboxSpring.models.Folder;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -15,4 +16,7 @@ public interface FolderRepository extends JpaRepository<Folder, UUID> {
             """, nativeQuery = true)
     Optional<Folder> findFolderByFileId(UUID fileId);
 
+
+    @Query(value = "SELECT * FROM folder f WHERE user_id = ?", nativeQuery = true)
+    List<Folder> findAllFoldersByUserId(UUID user);
 }
