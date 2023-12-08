@@ -37,6 +37,12 @@ public class UserIntegrationTest {
 
     }
 
+    /**
+     * This is a method for testing when registering a new user.
+     * Here it tests when I add all the credentials(name, email, password) and expects an
+     * Ok response with all given credentials matching with expected result and also a success message.
+     * @throws Exception
+     */
     @Test
     void given_iHaveSelectedAllMyCredentials_when_registerWithSelectedCredentials_then_iGetAnResponseStatusOkAndExpectAnMessageDtoObjectWithAllItsValuesMatching() throws Exception {
         //given
