@@ -59,7 +59,9 @@ public class FileIntegrationTest {
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "folder_files","folder", "user", "files" );
     }
 
-    /*this is a method for testing if a file and its content gets successfully uploaded
+    /**
+     * this is a method for testing if a file and its content gets successfully uploaded
+     * and if all its content matches the expected values.
     */
     @Test
     void given_iHaveSelectedAFolder_when_iUploadFileToMyFolder_then_iGetAOkStatusResponseAndExpectAnUploadFileDtoObjectWithValuesMatching() throws Exception {
@@ -115,6 +117,12 @@ public class FileIntegrationTest {
 
     }
 
+    /**
+     * This is a method for testing when deleting many files from a folder.
+     * Here it tests when deleting all files from the folder and expects
+     * a success message and data with an empty array.
+     * @throws Exception
+     */
     @Transactional
     @Test
     void given_IHaveSelectedAllFilesInMyFolder_When_iDeleteTheFilesByAnRequestWithListOfStringIds_Then_iGetAResponseStatusOkAndExpectAmessageAndaEmptyArray() throws Exception {
