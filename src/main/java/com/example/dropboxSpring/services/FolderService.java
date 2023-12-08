@@ -2,6 +2,7 @@ package com.example.dropboxSpring.services;
 
 import com.example.dropboxSpring.dtos.CreateFolderDto;
 import com.example.dropboxSpring.exceptions.FolderAlreadyExistsException;
+import com.example.dropboxSpring.exceptions.FolderNameOfUserAlreadyExistsException;
 import com.example.dropboxSpring.models.Folder;
 import com.example.dropboxSpring.models.User;
 import com.example.dropboxSpring.repositories.FolderRepository;
@@ -23,7 +24,7 @@ public class FolderService {
      * @param dto
      * @return
      */
-    public Folder createFolder(String token, CreateFolderDto dto) throws FolderAlreadyExistsException {
+    public Folder createFolder(String token, CreateFolderDto dto) throws FolderNameOfUserAlreadyExistsException {
         User user = userService.findUserByToken(token);
         var folder = Folder.builder()
                 .name(dto.getName())
@@ -31,7 +32,7 @@ public class FolderService {
                 .build();
         List<Folder> foldersByUser = folderRepository.findAllFoldersByUserId(user.getId());
         if(containsName(foldersByUser, folder.getName())) {
-            throw new FolderAlreadyExistsException
+            throw new FolderNameOfUserAlreadyExistsException
                     ("Folder of name " + folder.getName() + " already exists");
         }
 

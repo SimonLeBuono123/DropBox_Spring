@@ -27,7 +27,7 @@ public class JwtUtility {
      * Generates a random secret on every start/restart of program
      * Meaning that the token even if not expired will not be valid
      * on the next start of program as the secret will be changed.
-     * This is to make it a slight bit harder to decode a secret.
+     * This is to make it  a bit harder to decode a token.
      */
     private SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     private String secret = Encoders.BASE64.encode(key.getEncoded());
@@ -52,7 +52,7 @@ public class JwtUtility {
     }
 
     /**
-     * Method for extracting email of token
+     * Method for extracting the email of token
      *
      * @param token
      * @return
@@ -60,10 +60,10 @@ public class JwtUtility {
     public String extractEmail(String token) {
         try {
             return extractClaim(token, Claims::getSubject);
-        }catch(Exception e){
-           validateToken(token);
+        } catch (Exception e) {
+            validateToken(token);
         }
-       return null;
+        return null;
     }
 
     public Claims extractAllClaims(String token) {
@@ -92,7 +92,10 @@ public class JwtUtility {
     public boolean validateToken(String token) {
         try {
             SecretKey secrets = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
-            Jwts.parserBuilder().setSigningKey(secrets).build().parseClaimsJws(token);
+            Jwts.parserBuilder()
+                    .setSigningKey(secrets)
+                    .build()
+                    .parseClaimsJws(token);
             return true;
         } catch (SignatureException e) {
 
