@@ -3,6 +3,7 @@ package com.example.dropboxSpring.controllers;
 
 import com.example.dropboxSpring.dtos.CreateFolderDto;
 import com.example.dropboxSpring.exceptions.FolderNameOfUserAlreadyExistsException;
+import com.example.dropboxSpring.models.Folder;
 import com.example.dropboxSpring.services.FolderService;
 import com.example.dropboxSpring.utils.TokenStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Class for handling different http methods and routes
@@ -45,5 +47,13 @@ public class FolderController {
         }catch (Exception e){
             return ResponseEntity.ok(e.getMessage());
         }
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<Folder>> getAllFolderByUser(
+            @RequestHeader("Authorization") String token
+    ){
+        String reTokened = TokenStringUtils.removeEmptySpace(token);
+        return ResponseEntity.ok(folderService.findAllFoldersOfUser(reTokened));
     }
 }

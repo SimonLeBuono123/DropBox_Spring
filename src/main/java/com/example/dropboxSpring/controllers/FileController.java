@@ -66,7 +66,7 @@ public class FileController {
 
     /**
      * Http get method for getting all the files of a given folder
-     * The fileDto class also has a variabel than return an url of the given file
+     * The fileDto class also has a variabel that return an url of the given file
      * which also includes a download.
      * @param token
      * @param folderId

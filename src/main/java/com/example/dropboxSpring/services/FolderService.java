@@ -48,6 +48,14 @@ public class FolderService {
         return folderRepository.save(folder);
     }
 
+    public List<Folder> findAllFoldersOfUser(String token){
+
+        User user = userService.findUserByToken(token);
+
+        List<Folder> folders = folderRepository.findAllFoldersByUserId(user.getId());
+
+        return folders;
+    }
     /**
      * Boolean method for checking if a list of folders contains the same name of folder
      *

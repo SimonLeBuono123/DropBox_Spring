@@ -70,7 +70,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/login", "/user/register").permitAll()
-                        .requestMatchers("/file/**", "/folder/create").access(user)
+                        .requestMatchers("/file/**", "/folder/create,", "/folder/all").access(user)
                         .requestMatchers("/adminTest").access(admin)
                         .anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider())
