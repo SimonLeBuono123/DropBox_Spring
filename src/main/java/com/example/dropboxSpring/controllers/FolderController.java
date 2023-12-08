@@ -3,7 +3,6 @@ package com.example.dropboxSpring.controllers;
 
 import com.example.dropboxSpring.dtos.CreateFolderDto;
 import com.example.dropboxSpring.exceptions.FolderAlreadyExistsException;
-import com.example.dropboxSpring.models.Folder;
 import com.example.dropboxSpring.services.FolderService;
 import com.example.dropboxSpring.utils.TokenStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
